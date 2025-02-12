@@ -5,7 +5,7 @@ import Home from './pages/Home';
 
 function App() {
 	return (
-		<main className='app transition-all ease-in'>
+		<main className='app transition-all ease-in max-h-screen overflow-hidden'>
 			<Home />
 			<Customizer />
 			<CanvasModel />
