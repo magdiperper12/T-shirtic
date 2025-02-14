@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio';
 
 import confige from '../config/config';
 import state from '../store';
-import { download } from '../assets';
+import { download, logoShirt, stylishShirt } from '../assets';
 import { downloadCanvasToImage, reader } from '../config/helpers';
 import { EditorTabs, FilterTabs, DecalTypes } from '../config/constants';
 import { fadeAnimation, slideAnimation } from '../config/motion';
@@ -17,6 +17,34 @@ import CustomButton from '../components/CustomButton';
 
 const Customizer = () => {
 	const snap = useSnapshot(state);
+
+	const [file, setFile] = useState('');
+	const [prompt, setPrompt] = useState('');
+	const [generateImage, setGenerateImage] = useState(false);
+	const [activeEditorTab, setActiveEditorTab] = useState('');
+	const [activeFilterTab, setActiveFilterTab] = useState({
+		logoShirt: true,
+		stylishShirt: false,
+	});
+	//show tab content depending on the activetab
+	const generateTabContent = () => {
+		switch (activeEditorTab) {
+			case 'colorpicker':
+				return <ColorPicker />;
+			case 'filepicker':
+				return (
+					<FillPicker
+						file={file}
+						setFile={setFile}
+					/>
+				);
+			case 'aipicker':
+				return <AIpicker />;
+
+			default:
+				return null;
+		}
+	};
 	return (
 		<AnimatePresence>
 			{!snap.intro && (
@@ -26,14 +54,15 @@ const Customizer = () => {
 						className='absolute top-0 z-10'
 						{...slideAnimation('left')}>
 						<div className='flex items-center min-h-screen'>
-							<div className='editortabs-container tabs'>
+							<div className=' bg-blue-100  p-5 rounded-md flex flex-col gap-4 tabs'>
 								{EditorTabs.map((tab) => (
 									<Tab
 										key={tab.name}
 										tab={tab}
-										handelclick={() => {}}
+										handleclick={() => setActiveEditorTab(tab.name)}
 									/>
 								))}
+								{generateTabContent()}
 							</div>
 						</div>
 					</motion.div>
@@ -50,7 +79,7 @@ const Customizer = () => {
 					<motion.div
 						className='absolute bottom-5 left-1/2   z-10'
 						{...slideAnimation('up')}>
-						<div className=' tabs flex  gap-4'>
+						<div className=' bg-blue-100  p-5 rounded-md flex gap-4 tabs'>
 							{FilterTabs.map((tab) => (
 								<Tab
 									key={tab.name}
@@ -58,7 +87,7 @@ const Customizer = () => {
 									handelclick={() => {}}
 									isFilterTab
 									isActiveTab=''
-									handellclick={() => {}}
+									handleclick={() => {}}
 								/>
 							))}
 						</div>
